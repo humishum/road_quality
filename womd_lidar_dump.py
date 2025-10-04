@@ -3,14 +3,15 @@ import numpy as np
 import tensorflow as tf
 
 from waymo_open_dataset import dataset_pb2 as _dataset_pb2
+from waymo_open_dataset.protos import scenario_pb2
 from waymo_open_dataset.utils import frame_utils
 
 def scenario_to_first_frame(path):
     dataset = tf.data.TFRecordDataset(path, compression_type='')
     raw = next(iter(dataset))
-    scenario = _dataset_pb2.Scenario()
+    scenario = scenario_pb2.Scenario()
     scenario.ParseFromString(bytes(raw.numpy()))
-
+    
     # LiDAR data lives in scenario.lidar_data (list, one per timestamp).
     # Take the first lidar_data entry:
     lidar_record = scenario.lidar_data[0].lidar_points_compressed
